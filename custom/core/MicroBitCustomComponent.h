@@ -1,3 +1,4 @@
+/*
 MIT License
 
 Copyright (c) 2021 jp-rad
@@ -19,3 +20,28 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+#ifndef MICROBIT_CUSTOM_COMPONENT_H
+#define MICROBIT_CUSTOM_COMPONENT_H
+
+#include "MicroBit.h"
+
+// The base of custom event ID.
+static const uint16_t MICROBIT_CUSTOM_EVENT_ID_BASE = 32768;
+
+class MicroBitCustomComponent : public MicroBitComponent
+{
+public:
+
+    /**
+      * Event Bus ID of this component.
+      */ 
+    uint16_t getId(void)
+    {
+        return this->id;
+    }
+
+};
+
+#endif /* #ifndef MICROBIT_CUSTOM_COMPONENT_H */
