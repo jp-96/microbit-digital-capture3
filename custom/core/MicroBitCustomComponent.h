@@ -27,8 +27,8 @@ SOFTWARE.
 
 #include "MicroBit.h"
 
-// The base of custom event ID.
-static const uint16_t MICROBIT_CUSTOM_EVENT_ID_BASE = 32768;
+// The base of custom Event Bus ID.
+static const uint16_t MICROBIT_CUSTOM_ID_BASE = 32768;
 
 class MicroBitCustomComponent : public MicroBitComponent
 {

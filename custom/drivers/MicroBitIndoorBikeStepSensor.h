@@ -26,17 +26,17 @@ SOFTWARE.
 #define MICROBIT_INDOOR_BIKE_STEP_SENSOR_H
 
 #include "MicroBit.h"
-#include "../core/MicroBitCustomComponent.h"
+#include "MicroBitCustomComponent.h"
 #include <queue>
 
 // Coefficient of Cadence and Speed
 #define K_STEP_CADENCE  120000000
-#define K_STEP_SPEED   1620000000
+#define K_STEP_SPEED   1800000000
 
-// Event ID for IndoorBike step sensor
-#ifndef MICROBIT_INDOORBIKE_STEP_SENSOR_EVENT_ID
-#define MICROBIT_INDOORBIKE_STEP_SENSOR_EVENT_ID (MICROBIT_CUSTOM_EVENT_ID_BASE+1)
-#endif /* #ifndef MICROBIT_INDOORBIKE_STEP_SENSOR_EVENT_ID */
+// Event Bus ID for IndoorBike step sensor
+#ifndef MICROBIT_INDOORBIKE_STEP_SENSOR_ID
+#define MICROBIT_INDOORBIKE_STEP_SENSOR_ID (MICROBIT_CUSTOM_ID_BASE+1)
+#endif /* #ifndef MICROBIT_INDOORBIKE_STEP_SENSOR_ID */
 
 // Event value
 #define MICROBIT_INDOOR_BIKE_STEP_SENSOR_EVT_DATA_UPDATE 0b0000000000000001
@@ -72,7 +72,7 @@ private:
     
 public:
     // Constructor.
-    MicroBitIndoorBikeStepSensor(MicroBit &_uBit, MicrobitIndoorBikeStepSensorPin pin = EDGE_P2, uint16_t id = MICROBIT_INDOORBIKE_STEP_SENSOR_EVENT_ID);
+    MicroBitIndoorBikeStepSensor(MicroBit &_uBit, MicrobitIndoorBikeStepSensorPin pin = EDGE_P2, uint16_t id = MICROBIT_INDOORBIKE_STEP_SENSOR_ID);
 
     /**
       * Periodic callback from MicroBit idle thread.
@@ -95,7 +95,7 @@ private:
     
 private:
     // クランク回転数と速度を再計算する（最新化）
-    void update(bool forced = false);
+    void update();
 
 public:
 

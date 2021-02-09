@@ -22,10 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include "inttypes.h"
 #include "MicroBit.h"
 #include "MicroBitIndoorBikeStepSensor.h"
 
 MicroBit uBit;
+MicroBitIndoorBikeStepSensor stepSensor(uBit);
+
+uint32_t stepCount;
+
+void onStepSensor(MicroBitEvent e)
+{
+    uBit.serial.printf("%" PRIu32 ", %" PRIu32 ", %" PRIu32 ", %" PRIu32 "\r\n"
+        , ++stepCount, (uint32_t)e.timestamp, stepSensor.getCadence2() , stepSensor.getSpeed100());
+}
+
+void setup(void)
+{    
+    uBit.serial.printf("#, Timestamp, Cadence2, Speed100\r\n");
+    uBit.addIdleComponent(&stepSensor);
+    uBit.messageBus.listen(MICROBIT_INDOORBIKE_STEP_SENSOR_ID, MICROBIT_INDOOR_BIKE_STEP_SENSOR_EVT_DATA_UPDATE, onStepSensor);
+    uBit.display.scrollAsync("GO!");
+}
 
 int main()
 {
@@ -33,7 +51,7 @@ int main()
     uBit.init();
 
     // Insert your code here!
-    uBit.display.scroll("HELLO WORLD! :)");
+    create_fiber(setup);
 
     // If main exits, there may still be other fibers running or registered event handlers etc.
     // Simply release this fiber, which will mean we enter the scheduler. Worse case, we then

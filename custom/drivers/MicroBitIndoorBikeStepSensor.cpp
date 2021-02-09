@@ -86,7 +86,7 @@ uint32_t MicroBitIndoorBikeStepSensor::getSpeed100(void)
     return this->lastSpeed100;
 }
 
-void MicroBitIndoorBikeStepSensor::update(bool forced)
+void MicroBitIndoorBikeStepSensor::update(void)
 {
     uint64_t currentTime = system_timer_current_time_us();
 
@@ -98,7 +98,7 @@ void MicroBitIndoorBikeStepSensor::update(bool forced)
         status |= MICROBIT_INDOOR_BIKE_STEP_SENSOR_ADDED_TO_IDLE;
     }
     
-    if (forced || currentTime >= this->updateSampleTimestamp)
+    if (currentTime >= this->updateSampleTimestamp)
     {
         this->updateSampleTimestamp = currentTime + this->SENSOR_UPDATE_PERIOD_US;
         
@@ -135,7 +135,6 @@ void MicroBitIndoorBikeStepSensor::onStepSensor(MicroBitEvent e)
     {
         // 初回から、回転数とスピードを算出する。
         this->intervalList.push(currentTime-MAX_STEPS_INTERVAL_TIME_US);
-        this->update(true);
     }
     this->intervalList.push(currentTime);
     if ((uint32_t)this->intervalList.size()>(this->INTERVAL_LIST_SIZE))
