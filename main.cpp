@@ -1,31 +1,49 @@
 /*
-The MIT License (MIT)
+MIT License
 
-Copyright (c) 2016 British Broadcasting Corporation.
-This software is provided by Lancaster University by arrangement with the BBC.
+Copyright (c) 2021 jp-rad
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 */
 
+#include "inttypes.h"
 #include "MicroBit.h"
+#include "MicroBitIndoorBikeStepSensor.h"
 
 MicroBit uBit;
+MicroBitIndoorBikeStepSensor stepSensor(uBit);
+
+uint32_t stepCount;
+
+void onStepSensor(MicroBitEvent e)
+{
+    uBit.serial.printf("%" PRIu32 ", %" PRIu32 ", %" PRIu32 ", %" PRIu32 "\r\n"
+        , ++stepCount, (uint32_t)e.timestamp, stepSensor.getCadence2() , stepSensor.getSpeed100());
+}
+
+void setup(void)
+{    
+    uBit.serial.printf("#, Timestamp, Cadence2, Speed100\r\n");
+    uBit.addIdleComponent(&stepSensor);
+    uBit.messageBus.listen(MICROBIT_INDOORBIKE_STEP_SENSOR_ID, MICROBIT_INDOOR_BIKE_STEP_SENSOR_EVT_DATA_UPDATE, onStepSensor);
+    uBit.display.scrollAsync("GO!");
+}
 
 int main()
 {
@@ -33,7 +51,7 @@ int main()
     uBit.init();
 
     // Insert your code here!
-    uBit.display.scroll("HELLO WORLD! :)");
+    create_fiber(setup);
 
     // If main exits, there may still be other fibers running or registered event handlers etc.
     // Simply release this fiber, which will mean we enter the scheduler. Worse case, we then
